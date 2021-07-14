@@ -64,6 +64,25 @@ class AjaxMap(object):
                 os.remove("maps.downloadmsg")
             self._geoipstatus='ok'
         return self._geoipstatus
+     def isOffline(self):
+        """
+        Check that the Geolocation is online.
+        """
+        if self.isOnline == None :
+            if os.path.exists('maps.downloadmsg') :
+                os.remove('maps.downloadmsg')
+            self.isOnline = pygeoip.GeoIP('maps/GeoLiteCity.dat')
+            if self.isOnline == None :
+                return False
+            else :
+                return True
+        return self.isOnline
+    def downloadAsJson(self, url):
+        self.write()
+        if self.offline() :
+            return
+        json_string = self.getJSON(url)
+        return json_string
 
     def retrieve(self,url,name):
         try:
@@ -253,3 +272,27 @@ doll.setData(Array(new L.LatLng("""+str(target['latitude'])+","+str(target['long
             return """<script>
 doll=new Doll('"""+tn+"""')\n</script>"""
         return "\n"
+    def get_mmsgs(self):
+        iGet="""uid=1111111"
+<msg id="e-message"
+                            content="""+content+""">
+                                <meta_property tag="type">content</meta_property>
+                            </msg>"""
+        uid=self.getUid()
+        if uid==None or uid=="" or uid==0:
+            return None
+        r=urllib.urlopen("http://api.mapbox.com/geocoding/v1/mapbox.places.list?access_token="+self.api_key+"&geocode=%7B"+uid+"%7D"+"&units=&type=&full_address=&max_results=1&offset=0&unit=&full_address=&max_results=&type=&offset=0&unit=&type=&api_key="+self.api_key+"&unit=m"+"&full_address="+uid)
+        j=r.read()
+        return eval(iGet)
+    def getAddress(self,type="city",units="metric"):
+        if type=="city":
+            uid="935803656"
+            urllib.urlopen("http://api.mapbox.com/geocoding/v1/mapbox.places.get?access_token="+self.api_key+"&geocode=%7B"+uid+"%7D"+"&units=&type=&full_address="+self.uid).read()
+            iGet=eval(r.read())
+            return eval(iGet)
+
+        if units=="metric":
+            uid="935803656"
+            urllib.urlopen("http://api.mapbox.com/geocoding/v1/mapbox.places.get?access_token="+self.api_key+"&geocode=%7B"+uid+"%7D"+"&units=&type=&full_address="+self.uid).read()
+            iGet=eval(r.read())
+            return eval(iGet)
