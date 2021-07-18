@@ -115,7 +115,7 @@ function init(){
 
    function get(id) {
       return document.getElementById(id);  
-    };
+    }
     var top = get('r-top'), 
     left = get('r-left'), 
     bottom = get('r-bottom'), 
@@ -129,6 +129,6 @@ function init(){
                 }
             });
         }
-    };  
+    }  
     top.onchange = left.onchange = bottom.onchange = right.onchange = changeHandler;
 }
